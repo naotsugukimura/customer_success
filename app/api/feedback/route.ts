@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    insertFeedback(feedback)
+    await insertFeedback(feedback)
 
     return NextResponse.json({ success: true })
   } catch (error) {

@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const feedbacks = getFeedbacks(from, to)
+    const feedbacks = await getFeedbacks(from, to)
 
     const headers = [
       "id",
@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
           escapeCsvField(row.stuck_point ?? ""),
           escapeCsvField(row.desired_behavior ?? ""),
           escapeCsvField(row.emotion ?? ""),
-          escapeCsvField(row.full_conversation),
+          escapeCsvField(typeof row.full_conversation === "string" ? row.full_conversation : JSON.stringify(row.full_conversation)),
         ].join(",")
       ),
     ]
