@@ -10,7 +10,7 @@ const notoSansJP = Noto_Sans_JP({
 
 export const metadata: Metadata = {
   title: "VoCチャットボット | カスタマーサポート",
-  description: "かんたん請求ソフトの操作サポート・ご意見収集チャットボット",
+  description: "あゆみ請求の操作サポート・ご意見収集チャットボット",
 }
 
 export default function RootLayout({

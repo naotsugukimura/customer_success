@@ -13,7 +13,7 @@ export const RESOLUTION_BUTTONS: ButtonOption[] = [
 ]
 
 export const GREETING_MESSAGE =
-  "こんにちは！かんたん請求ソフトの操作サポートです。\nどんな操作をしたいですか？お気軽にご相談ください。"
+  "こんにちは！あゆみ請求の操作サポートです。\nどんな操作をしたいですか？お気軽にご相談ください。"
 
 export const RESOLUTION_MESSAGE =
   "お役に立てましたか？"

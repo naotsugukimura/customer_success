@@ -257,7 +257,7 @@ export function ChatContainer() {
         <MessageSquare className="size-5" />
         <div>
           <p className="text-sm font-bold">操作サポートチャット</p>
-          <p className="text-xs opacity-80">かんたん請求ソフト</p>
+          <p className="text-xs opacity-80">あゆみ請求</p>
         </div>
       </div>
 

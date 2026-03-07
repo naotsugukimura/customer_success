@@ -89,7 +89,7 @@ function generateMockFeedback(count: number): Feedback[] {
       full_conversation: [
         {
           role: "assistant",
-          content: "こんにちは！かんたん請求ソフトの操作サポートです。\nどんな操作をしたいですか？",
+          content: "こんにちは！あゆみ請求の操作サポートです。\nどんな操作をしたいですか？",
           timestamp: randomDate(90),
         },
         {
