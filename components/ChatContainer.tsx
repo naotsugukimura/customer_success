@@ -251,7 +251,7 @@ export function ChatContainer() {
   const showSamples = phase === "hearing" && messages.length <= 1
 
   return (
-    <div className="mx-auto flex h-[100dvh] max-w-2xl flex-col">
+    <div className="mx-auto flex h-full max-w-2xl flex-col">
       {/* Header */}
       <div className="flex shrink-0 items-center gap-3 border-b bg-primary px-4 py-3 text-primary-foreground">
         <MessageSquare className="size-5" />

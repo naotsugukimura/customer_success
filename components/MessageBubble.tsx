@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils"
 import type { ChatMessage } from "@/lib/types"
 import { Bot, User } from "lucide-react"
+import { NavigationGuide } from "./NavigationGuide"
 
 interface MessageBubbleProps {
   message: ChatMessage
@@ -40,6 +41,17 @@ function renderBold(text: string) {
   )
 }
 
+function extractNavSteps(text: string): string[] {
+  // 「メニュー」→「記録管理」→「日報入力」のようなパターンを抽出
+  const pattern = /「([^」]+)」(?:\s*→\s*「([^」]+)」)+/g
+  const match = text.match(pattern)
+  if (!match) return []
+  // 最初にマッチしたパスからステップを抽出
+  const steps = match[0].match(/「([^」]+)」/g)
+  if (!steps) return []
+  return steps.map((s) => s.replace(/[「」]/g, ""))
+}
+
 export function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.role === "user"
 
@@ -61,7 +73,13 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         {isUser ? (
           <p className="leading-relaxed">{message.content}</p>
         ) : (
-          <div className="space-y-1">{renderContent(message.content)}</div>
+          <>
+            <div className="space-y-1">{renderContent(message.content)}</div>
+            {(() => {
+              const steps = extractNavSteps(message.content)
+              return steps.length > 0 ? <NavigationGuide steps={steps} /> : null
+            })()}
+          </>
         )}
       </div>
       {isUser && (
