@@ -12,7 +12,7 @@ import {
   GREETING_MESSAGE,
   COMPLETION_RESOLVED_MESSAGE,
   COMPLETION_FEEDBACK_MESSAGE,
-  SAMPLE_QUESTIONS,
+  TASK_MENU,
 } from "@/lib/constants"
 import type {
   ChatMessage,
@@ -239,9 +239,22 @@ export function ChatContainer() {
     }, 100)
   }
 
-  const handleSampleClick = (question: string) => {
-    setInput(question)
-    inputRef.current?.focus()
+  const handleTaskClick = (query: string) => {
+    if (!query) {
+      // 「その他」: 入力欄にフォーカスするだけ
+      inputRef.current?.focus()
+      return
+    }
+    setInput(query)
+    // 自動送信: 入力をセットしてから次のtickで送信
+    setTimeout(() => {
+      setInput("")
+      setUserIntent(query)
+      const userMsg = addMessage("user", query, "hearing")
+      const updatedMessages = [...messages, userMsg]
+      setPhase("guidance")
+      streamChatResponse(updatedMessages)
+    }, 50)
   }
 
   const showInput = phase === "hearing" || phase === "guidance" || phase === "resolution"
@@ -294,20 +307,21 @@ export function ChatContainer() {
         </div>
       </ScrollArea>
 
-      {/* Sample questions */}
+      {/* Task menu */}
       {showSamples && (
         <div className="shrink-0 border-t px-4 py-3">
-          <p className="mb-2 text-xs text-muted-foreground">
-            よくあるご質問:
+          <p className="mb-2 text-xs font-medium text-muted-foreground">
+            今日はどんな作業をしますか？
           </p>
-          <div className="flex flex-wrap gap-2">
-            {SAMPLE_QUESTIONS.map((q) => (
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {TASK_MENU.map((item) => (
               <button
-                key={q}
-                onClick={() => handleSampleClick(q)}
-                className="rounded-full border px-3 py-1.5 text-xs transition-colors hover:bg-muted"
+                key={item.label}
+                onClick={() => handleTaskClick(item.query)}
+                className="flex items-center gap-2 rounded-lg border px-3 py-2.5 text-left text-sm transition-colors hover:bg-accent hover:border-primary/30"
               >
-                {q}
+                <span className="text-lg">{item.icon}</span>
+                <span className="leading-tight">{item.label}</span>
               </button>
             ))}
           </div>

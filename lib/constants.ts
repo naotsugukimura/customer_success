@@ -32,3 +32,18 @@ export const SAMPLE_QUESTIONS = [
   "請求書を出力したい",
   "利用者情報を変更したい",
 ]
+
+export interface TaskMenuItem {
+  icon: string
+  label: string
+  query: string
+}
+
+export const TASK_MENU: TaskMenuItem[] = [
+  { icon: "📋", label: "実績を入力する", query: "実績を入力したい" },
+  { icon: "📄", label: "請求データを作る", query: "国保連への請求データを作成・送信したい" },
+  { icon: "🖨️", label: "帳票を印刷する", query: "請求書・領収書を作成したい" },
+  { icon: "👤", label: "利用者情報を変える", query: "利用者情報を登録・変更したい" },
+  { icon: "⚙️", label: "設定・ログイン", query: "あゆみ請求にログインしたい" },
+  { icon: "❓", label: "その他（自由に質問）", query: "" },
+]
