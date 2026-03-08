@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect, useCallback } from "react"
 import { v4 as uuidv4 } from "uuid"
 import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { MessageBubble } from "./MessageBubble"
 import { ResolutionPrompt } from "./ResolutionPrompt"
 import { FeedbackForm } from "./FeedbackForm"
@@ -311,7 +310,7 @@ export function ChatContainer() {
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+      <div className="min-h-0 flex-1 overflow-y-auto p-4" ref={scrollRef}>
         <div className="space-y-4">
           {messages.map((msg, i) => (
             <MessageBubble key={i} message={msg} />
@@ -349,7 +348,7 @@ export function ChatContainer() {
             </div>
           )}
         </div>
-      </ScrollArea>
+      </div>
 
       {/* Task menu */}
       {showSamples && (
