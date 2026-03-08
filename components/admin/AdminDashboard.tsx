@@ -7,13 +7,21 @@ import { FilterBar } from "./FilterBar"
 import { FeedbackTable } from "./FeedbackTable"
 import { DetailPanel } from "./DetailPanel"
 import { AlertBanner } from "./AlertBanner"
+import { ChurnDashboard } from "./ChurnDashboard"
 import { MOCK_FEEDBACKS, calcStats } from "@/lib/mock-data"
 import type { Feedback } from "@/lib/types"
-import { Download, BarChart3 } from "lucide-react"
+import { Download, BarChart3, MessageSquare, Shield } from "lucide-react"
 
+const SUB_TABS = [
+  { id: "voc", label: "VoC分析", icon: MessageSquare },
+  { id: "churn", label: "解約リスク検知", icon: Shield },
+] as const
+
+type SubTabId = (typeof SUB_TABS)[number]["id"]
 type SortKey = "created_at" | "user_intent" | "resolved" | "emotion" | "stuck_point"
 
 export function AdminDashboard() {
+  const [subTab, setSubTab] = useState<SubTabId>("voc")
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [emotionFilter, setEmotionFilter] = useState("all")
@@ -85,59 +93,84 @@ export function AdminDashboard() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-5 p-4 lg:p-6">
-      {/* Title */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <BarChart3 className="size-5 text-primary" />
-          <h1 className="text-lg font-bold">VoC 管理ダッシュボード</h1>
-        </div>
-        <Button variant="outline" size="sm" onClick={handleExportCsv} className="gap-1.5">
-          <Download className="size-3.5" />
-          CSVエクスポート
-        </Button>
+    <div>
+      {/* Sub-tab navigation */}
+      <div className="flex border-b bg-muted/30 px-4">
+        {SUB_TABS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setSubTab(tab.id)}
+            className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium transition-colors ${
+              subTab === tab.id
+                ? "border-b-2 border-primary text-primary"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <tab.icon className="size-3.5" />
+            {tab.label}
+          </button>
+        ))}
       </div>
 
-      {/* Real-time Alerts */}
-      <AlertBanner feedbacks={MOCK_FEEDBACKS} onViewDetail={setSelected} />
+      {/* Sub-tab content */}
+      {subTab === "churn" ? (
+        <ChurnDashboard />
+      ) : (
+        <div className="mx-auto max-w-6xl space-y-5 p-4 lg:p-6">
+          {/* Title */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="size-5 text-primary" />
+              <h1 className="text-lg font-bold">VoC 管理ダッシュボード</h1>
+            </div>
+            <Button variant="outline" size="sm" onClick={handleExportCsv} className="gap-1.5">
+              <Download className="size-3.5" />
+              CSVエクスポート
+            </Button>
+          </div>
 
-      {/* Stats */}
-      <StatCards stats={stats} />
+          {/* Real-time Alerts */}
+          <AlertBanner feedbacks={MOCK_FEEDBACKS} onViewDetail={setSelected} />
 
-      {/* Filters */}
-      <FilterBar
-        search={search}
-        onSearchChange={setSearch}
-        statusFilter={statusFilter}
-        onStatusChange={setStatusFilter}
-        emotionFilter={emotionFilter}
-        onEmotionChange={setEmotionFilter}
-      />
+          {/* Stats */}
+          <StatCards stats={stats} />
 
-      {/* Table */}
-      <div>
-        <p className="mb-2 text-xs text-muted-foreground">
-          {filtered.length} 件のフィードバック
-        </p>
-        <FeedbackTable
-          feedbacks={filtered}
-          sortKey={sortKey}
-          sortDir={sortDir}
-          onSort={handleSort}
-          onSelect={setSelected}
-          selectedId={selected?.id ?? null}
-        />
-      </div>
-
-      {/* Detail Panel */}
-      {selected && (
-        <>
-          <div
-            className="fixed inset-0 z-40 bg-black/20"
-            onClick={() => setSelected(null)}
+          {/* Filters */}
+          <FilterBar
+            search={search}
+            onSearchChange={setSearch}
+            statusFilter={statusFilter}
+            onStatusChange={setStatusFilter}
+            emotionFilter={emotionFilter}
+            onEmotionChange={setEmotionFilter}
           />
-          <DetailPanel feedback={selected} onClose={() => setSelected(null)} />
-        </>
+
+          {/* Table */}
+          <div>
+            <p className="mb-2 text-xs text-muted-foreground">
+              {filtered.length} 件のフィードバック
+            </p>
+            <FeedbackTable
+              feedbacks={filtered}
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={handleSort}
+              onSelect={setSelected}
+              selectedId={selected?.id ?? null}
+            />
+          </div>
+
+          {/* Detail Panel */}
+          {selected && (
+            <>
+              <div
+                className="fixed inset-0 z-40 bg-black/20"
+                onClick={() => setSelected(null)}
+              />
+              <DetailPanel feedback={selected} onClose={() => setSelected(null)} />
+            </>
+          )}
+        </div>
       )}
     </div>
   )
