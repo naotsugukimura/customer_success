@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { MessageBubble } from "./MessageBubble"
 import { ResolutionPrompt } from "./ResolutionPrompt"
 import { FeedbackForm } from "./FeedbackForm"
+import { EscalationPanel } from "./EscalationPanel"
 import { TypingIndicator } from "./TypingIndicator"
 import {
   GREETING_MESSAGE,
@@ -176,8 +177,42 @@ export function ChatContainer() {
         emotion: null,
       })
     } else {
-      setPhase("voc_collection")
+      setPhase("escalation")
     }
+  }
+
+  const handleEscalationPhone = () => {
+    addMessage(
+      "assistant",
+      "お電話でのご相談をご希望ですね。\nお客様相談窓口: 0120-00-0000（通話無料）\n平日 9:00〜20:30 / 土日祝 9:00〜17:30",
+      "completed"
+    )
+    setPhase("completed")
+    saveFeedback({
+      resolved: false,
+      stuck_point: "電話相談を希望",
+      desired_behavior: null,
+      emotion: null,
+    })
+  }
+
+  const handleEscalationCallback = (name: string, phone: string) => {
+    addMessage(
+      "assistant",
+      `${name}様、折り返しのご連絡を承りました。\n担当者より ${phone} へお電話いたします。`,
+      "completed"
+    )
+    setPhase("completed")
+    saveFeedback({
+      resolved: false,
+      stuck_point: `折返し希望: ${name} / ${phone}`,
+      desired_behavior: null,
+      emotion: null,
+    })
+  }
+
+  const handleEscalationFeedback = () => {
+    setPhase("voc_collection")
   }
 
   const handleFeedbackSubmit = async (data: FeedbackFormData) => {
@@ -259,6 +294,7 @@ export function ChatContainer() {
 
   const showInput = phase === "hearing" || phase === "guidance" || phase === "resolution"
   const showResolution = phase === "resolution" && !isStreaming
+  const showEscalation = phase === "escalation"
   const showFeedbackForm = phase === "voc_collection"
   const showReset = phase === "completed"
   const showSamples = phase === "hearing" && messages.length <= 1
@@ -286,6 +322,14 @@ export function ChatContainer() {
           )}
 
           {showResolution && <ResolutionPrompt onResolve={handleResolve} />}
+
+          {showEscalation && (
+            <EscalationPanel
+              onChoosePhone={handleEscalationPhone}
+              onChooseCallback={handleEscalationCallback}
+              onChooseFeedback={handleEscalationFeedback}
+            />
+          )}
 
           {showFeedbackForm && (
             <FeedbackForm onSubmit={handleFeedbackSubmit} />

@@ -6,6 +6,7 @@ import { StatCards } from "./StatCards"
 import { FilterBar } from "./FilterBar"
 import { FeedbackTable } from "./FeedbackTable"
 import { DetailPanel } from "./DetailPanel"
+import { AlertBanner } from "./AlertBanner"
 import { MOCK_FEEDBACKS, calcStats } from "@/lib/mock-data"
 import type { Feedback } from "@/lib/types"
 import { Download, BarChart3 } from "lucide-react"
@@ -96,6 +97,9 @@ export function AdminDashboard() {
           CSVエクスポート
         </Button>
       </div>
+
+      {/* Real-time Alerts */}
+      <AlertBanner feedbacks={MOCK_FEEDBACKS} onViewDetail={setSelected} />
 
       {/* Stats */}
       <StatCards stats={stats} />

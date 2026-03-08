@@ -3,6 +3,7 @@ export type ConversationPhase =
   | "hearing"
   | "guidance"
   | "resolution"
+  | "escalation"
   | "voc_collection"
   | "completed"
 
